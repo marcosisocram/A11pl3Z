@@ -2,7 +2,7 @@
     <img alt="A comet in the solar system and the names of Java 21, String boot and A11pl3Z" src="/images/logo-ai.webp?raw=true" title="Logo"/>
 </div>
 
-## Projeto Rinha de Backend 3ª
+## Projeto Para a Rinha de Backend 3ª
 
 ### Stack
 
