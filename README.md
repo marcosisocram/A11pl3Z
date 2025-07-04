@@ -1,5 +1,5 @@
 <div align="center" width="100%">
-    <img alt="A comet in the solar system and the names of Java 21, String boot and A11pl3Z" src="/marcosisocram/A11pl3Z/blob/teste-readme/images/logo-ai.webp?raw=true" title="Logo"/>
+    <img alt="A comet in the solar system and the names of Java 21, String boot and A11pl3Z" src="/images/logo-ai.webp?raw=true" title="Logo"/>
 </div>
 
 ## Projeto Rinha de Backend 3ª
