@@ -33,3 +33,4 @@
 - Nginx
 - Spring Boot Native
 - K6
+- Chaves GPG do GitHub
