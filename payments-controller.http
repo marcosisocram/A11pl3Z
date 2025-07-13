@@ -1,0 +1,14 @@
+### GET request to example server
+POST http://localhost:8080/payments HTTP/2
+Content-Type: application/json
+
+{
+    "correlationId": "{{$random.uuid}}",
+    "amount": {{$random.float()}}
+}
+
+### GET request to example server
+GET http://localhost:8080/payments-summary HTTP/2
+Accept: application/json
+
+###
