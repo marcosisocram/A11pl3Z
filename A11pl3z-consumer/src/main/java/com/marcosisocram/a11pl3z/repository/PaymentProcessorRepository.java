@@ -53,17 +53,10 @@ public class PaymentProcessorRepository {
         if ( SERVICE == DecisionMaker.ServiceChoice.DEFAULT ) {
             final ResponseEntity< PaymentResponse > processed = paymentProcessorDefaultClient.process( payment );
 
-            if ( ! processed.getStatusCode( ).is2xxSuccessful( ) ) {
-                throw new RuntimeException( "Deu merda" );
-            }
             paymentRepository.save( payment, PROCESSED_BY_DEFAULT );
             log.atInfo( ).log( "Processado {} pelo default", payment.getCorrelationId( ) );
         } else {
             final ResponseEntity< PaymentResponse > processed = paymentProcessorFallbackClient.process( payment );
-
-            if ( ! processed.getStatusCode( ).is2xxSuccessful( ) ) {
-                throw new RuntimeException( "Deu merda" );
-            }
 
             paymentRepository.save( payment, PROCESSED_BY_FALLBACK );
 

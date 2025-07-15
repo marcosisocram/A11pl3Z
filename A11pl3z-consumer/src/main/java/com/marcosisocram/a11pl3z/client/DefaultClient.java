@@ -27,7 +27,6 @@ public class DefaultClient {
 
     @SneakyThrows
     public ResponseEntity< PaymentResponse > process( Payment payment ) {
-        log.atInfo( ).log( "DefaultService process" );
 
         try {
             RestClient restClient = RestClient.builder( )

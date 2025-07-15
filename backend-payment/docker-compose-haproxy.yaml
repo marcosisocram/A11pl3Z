@@ -1,13 +1,13 @@
-version: '3.5'
+version: "3.5"
 services:
   api1: &app
-    image: a11pl3z-producer:0.0.1-SNAPSHOT
+    image: marcosisocram/a11pl3z-producer:1.0.0
     networks:
       - backend
     hostname: api1
     depends_on:
       rabbitmq:
-        condition: service_started
+        condition: service_healthy
       db:
         condition: service_healthy
     ports:
@@ -17,7 +17,7 @@ services:
       - DB_USER=user
       - DB_PASSWORD=rinha-de-bK
       - DB_HIKARI_MAXIMUN_POOL_SIZE=2
-      - SPRING_LOG_LEVEL=info
+      - SPRING_LOG_LEVEL=error
       - RABBIT_USER=user
       - RABBIT_PASSWORD=rinha-de-bK
       - RABBIT_HOST=rabbit
@@ -25,8 +25,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.325'
-          memory: "50MB"
+          cpus: "0.2"
+          memory: "35MB"
 
   api2: # API - Instância 02
     <<: *app
@@ -35,14 +35,14 @@ services:
     hostname: api2
 
   api-consumer:
-    image: a11pl3z-consumer:0.0.1-SNAPSHOT
+    image: marcosisocram/a11pl3z-consumer:1.0.0
     networks:
       - payment-processor
       - backend
     hostname: consumer
     depends_on:
       rabbitmq:
-        condition: service_started
+        condition: service_healthy
       db:
         condition: service_healthy
     ports:
@@ -52,7 +52,7 @@ services:
       - DB_USER=user
       - DB_PASSWORD=rinha-de-bK
       - DB_HIKARI_MAXIMUN_POOL_SIZE=2
-      - SPRING_LOG_LEVEL=info
+      - SPRING_LOG_LEVEL=error
       - PROCESSOR_DEFAULT_URL=http://payment-processor-default:8080
       - PROCESSOR_FALLBACK_URL=http://payment-processor-fallback:8080
       - RABBIT_USER=user
@@ -62,8 +62,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.325'
-          memory: "50MB"
+          cpus: "0.2"
+          memory: "70MB"
 
   db:
     networks:
@@ -81,36 +81,41 @@ services:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
       - ./postgresql.conf:/docker-entrypoint-initdb.d/postgresql.conf
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready" ]
+      test: ["CMD-SHELL", "pg_isready"]
       interval: 2s
       timeout: 5s
       retries: 7
     deploy:
       resources:
         limits:
-          cpus: '0.6'
-          memory: '80MB'
+          cpus: "0.2"
+          memory: "45MB"
 
   rabbitmq:
     networks:
       - backend
     hostname: rabbit
-    image: rabbitmq:latest
+    image: rabbitmq:4.1.2-alpine
     environment:
-      - 'RABBITMQ_DEFAULT_PASS=rinha-de-bK'
-      - 'RABBITMQ_DEFAULT_USER=user'
+      - "RABBITMQ_DEFAULT_PASS=rinha-de-bK"
+      - "RABBITMQ_DEFAULT_USER=user"
     ports:
-      - '55672:5672'
+      - "55672:5672"
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 4s
+      timeout: 5s
+      retries: 5
     deploy:
       resources:
         limits:
-          cpus: "0.25"
-          memory: "60MB"
+          cpus: "0.4"
+          memory: "105MB"
 
   haproxy:
     networks:
       - backend
-    image: haproxy:2.9.4
+    image: haproxy:3.2.3-alpine3.22
     volumes:
       - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
     depends_on:
@@ -121,7 +126,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.25"
+          cpus: "0.3"
           memory: "60MB"
 
 networks:

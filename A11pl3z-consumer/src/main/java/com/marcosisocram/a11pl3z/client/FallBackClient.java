@@ -27,7 +27,6 @@ public class FallBackClient {
 
     @SneakyThrows
     public ResponseEntity< PaymentResponse > process( Payment payment ) {
-        log.atInfo( ).log( "FallBackService process" );
 
         try {
             RestClient restClient = RestClient.builder( )

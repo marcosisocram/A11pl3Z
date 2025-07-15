@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.marcosisocram</groupId>
     <artifactId>a11pl3z-consumer</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>rinha-backend-a11pl3z</name>
     <description>Projeto para a Rinha de Backend 3a</description>
     <properties>
