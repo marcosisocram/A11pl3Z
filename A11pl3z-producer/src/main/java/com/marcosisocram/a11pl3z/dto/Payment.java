@@ -8,9 +8,6 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-//public record Payment( String correlationId, Double amount, LocalDateTime requestedAt ) {
-//}
-
 @Builder
 @Data
 @AllArgsConstructor

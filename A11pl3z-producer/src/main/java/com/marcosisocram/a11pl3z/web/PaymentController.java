@@ -2,7 +2,6 @@ package com.marcosisocram.a11pl3z.web;
 
 import com.marcosisocram.a11pl3z.dto.Payment;
 import com.marcosisocram.a11pl3z.dto.PaymentSummary;
-import com.marcosisocram.a11pl3z.dto.Totals;
 import com.marcosisocram.a11pl3z.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

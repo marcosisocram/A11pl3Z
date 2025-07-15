@@ -44,7 +44,7 @@ public class PaymentProcessorRepository {
         log.atDebug().log( "{}", SERVICE );
     }
 
-    public void processPayment( Payment payment ) {//recebe consumer
+    public void processPayment( Payment payment ) {
 
         if ( SERVICE == DecisionMaker.ServiceChoice.BOTH_FAILING ) {
             throw new IllegalStateException( "BOTH FAILING" );

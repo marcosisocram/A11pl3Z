@@ -27,8 +27,6 @@ public class PaymentService {
 
         payment.setRequestedAt( now );
 
-        log.atInfo().log( "Processing Payment: {}", payment.getCorrelationId( ) );
-
         rabbitPublisher.sendMessage( payment );
 
         log.atInfo().log( "Processed Payment: {}", payment.getCorrelationId( ) );

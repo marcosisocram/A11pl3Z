@@ -5,12 +5,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.aot.hint.annotation.RegisterReflectionForBinding;
 
 import java.io.Serial;
 import java.io.Serializable;
 
-//@RegisterReflectionForBinding(PaymentResponse.class)
 @Builder
 @Getter
 @Setter
