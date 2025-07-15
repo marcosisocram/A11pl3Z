@@ -1,36 +1,69 @@
 version: '3.5'
 services:
-#  api1: &app
-#    image: a11pl3z:0.0.1-SNAPSHOT
-#    networks:
-#      - payment-processor
-#      - backend
-#    hostname: api1
-#    depends_on:
-#      db:
-#        condition: service_healthy
-#    ports:
-#      - "9081:8080"
-#    environment:
-#      - DB_HIKARI_MAXIMUN_POOL_SIZE=15
-#      - DB_URL=jdbc:postgresql://db:5433/postgres
-#      - DB_USER=user
-#      - DB_PASSWORD=rinha-de-bK
-#      - DB_HIKARI_MAXIMUN_POOL_SIZE=10
-#      - SPRING_LOG_LEVEL=info
-#      - PROCESSOR_DEFAULT_URL=http://payment-processor-default:8080
-#      - PROCESSOR_FALLBACK_URL=http://payment-processor-fallback:8080
-#    deploy:
-#      resources:
-#        limits:
-#          cpus: '0.325'
-#          memory: "90MB"
-#
-#  api2: # API - Instância 02
-#    <<: *app
-#    ports:
-#      - "9082:8080"
-#    hostname: api2
+  api1: &app
+    image: a11pl3z-producer:0.0.1-SNAPSHOT
+    networks:
+      - backend
+    hostname: api1
+    depends_on:
+      rabbitmq:
+        condition: service_started
+      db:
+        condition: service_healthy
+    ports:
+      - "9081:8080"
+    environment:
+      - DB_URL=jdbc:postgresql://db:5433/postgres
+      - DB_USER=user
+      - DB_PASSWORD=rinha-de-bK
+      - DB_HIKARI_MAXIMUN_POOL_SIZE=2
+      - SPRING_LOG_LEVEL=info
+      - RABBIT_USER=user
+      - RABBIT_PASSWORD=rinha-de-bK
+      - RABBIT_HOST=rabbit
+      - RABBIT_PORT=5672
+    deploy:
+      resources:
+        limits:
+          cpus: '0.325'
+          memory: "50MB"
+
+  api2: # API - Instância 02
+    <<: *app
+    ports:
+      - "9082:8080"
+    hostname: api2
+
+  api-consumer:
+    image: a11pl3z-consumer:0.0.1-SNAPSHOT
+    networks:
+      - payment-processor
+      - backend
+    hostname: consumer
+    depends_on:
+      rabbitmq:
+        condition: service_started
+      db:
+        condition: service_healthy
+    ports:
+      - "9083:8080"
+    environment:
+      - DB_URL=jdbc:postgresql://db:5433/postgres
+      - DB_USER=user
+      - DB_PASSWORD=rinha-de-bK
+      - DB_HIKARI_MAXIMUN_POOL_SIZE=2
+      - SPRING_LOG_LEVEL=info
+      - PROCESSOR_DEFAULT_URL=http://payment-processor-default:8080
+      - PROCESSOR_FALLBACK_URL=http://payment-processor-fallback:8080
+      - RABBIT_USER=user
+      - RABBIT_PASSWORD=rinha-de-bK
+      - RABBIT_HOST=rabbit
+      - RABBIT_PORT=5672
+    deploy:
+      resources:
+        limits:
+          cpus: '0.325'
+          memory: "50MB"
 
   db:
     networks:
@@ -49,31 +82,47 @@ services:
       - ./postgresql.conf:/docker-entrypoint-initdb.d/postgresql.conf
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready" ]
-      interval: 5s
+      interval: 2s
       timeout: 5s
-      retries: 5
+      retries: 7
     deploy:
       resources:
         limits:
           cpus: '0.6'
-          memory: '300MB'
+          memory: '80MB'
 
-#  haproxy:
-#    networks:
-#      - backend
-#    image: haproxy:2.9.4
-#    volumes:
-#      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
-#    depends_on:
-#      - api1
-#      - api2
-#    ports:
-#      - "9999:9999"
-#    deploy:
-#      resources:
-#        limits:
-#          cpus: "0.25"
-#          memory: "70MB"
+  rabbitmq:
+    networks:
+      - backend
+    hostname: rabbit
+    image: rabbitmq:latest
+    environment:
+      - 'RABBITMQ_DEFAULT_PASS=rinha-de-bK'
+      - 'RABBITMQ_DEFAULT_USER=user'
+    ports:
+      - '55672:5672'
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: "60MB"
+
+  haproxy:
+    networks:
+      - backend
+    image: haproxy:2.9.4
+    volumes:
+      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+    depends_on:
+      - api1
+      - api2
+    ports:
+      - "9999:9999"
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: "60MB"
 
 networks:
   payment-processor:

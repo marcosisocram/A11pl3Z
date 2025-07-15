@@ -1,1 +1,0 @@
-docker buildx build --no-cache -t marcosisocram/graalvm-nik-maven:latest  .
