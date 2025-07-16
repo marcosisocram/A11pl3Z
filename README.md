@@ -9,7 +9,9 @@
 - Java 21
 - Spring boot 3.5.3
 - GraalVM
-- Nginx
+- HAProxy
+- RabbitMQ
+- PostgreSQL
 
 ## Como gerar o nativo
 
@@ -25,12 +27,13 @@
 ```
 
 ## Dificuldades
-
+- Com o limite de memoria de 350MB
 
 
 ## Conhecimentos adquiridos
 
-- Nginx
+- HAProxy
 - Spring Boot Native
+- JOOQ
 - K6
 - Chaves GPG do GitHub
